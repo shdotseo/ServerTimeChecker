@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">ServerTimeCheck</string>
+    <string name="app_name">서버시간 체크</string>
+
+    <string name="admob_app_id">ca-app-pub-2571675041295621~2008272312</string>
+    <string name="banner_ad_unit_id">ca-app-pub-2571675041295621/4638412887</string>
+    <string name="banner_ad_unit_id_for_test">ca-app-pub-3940256099942544/6300978111</string>
 </resources>
