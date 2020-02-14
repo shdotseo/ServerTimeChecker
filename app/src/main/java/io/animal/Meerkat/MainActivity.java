@@ -1,12 +1,12 @@
 package io.animal.Meerkat;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -20,9 +20,16 @@ import com.google.android.gms.ads.initialization.OnInitializationCompleteListene
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
+import io.animal.Meerkat.eventbus.FloatingServiceEvent;
+import io.animal.Meerkat.eventbus.FloatingServiceStatus;
 import io.animal.Meerkat.services.TimerFloatingService;
 import io.animal.Meerkat.ui.main.MainFragment;
 import io.animal.Meerkat.util.PermissionHelper;
+import io.animal.Meerkat.util.SharedPreferencesHelper;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -60,39 +67,44 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                // show floating view
                 if (!isClockFloating) {
+                    // show floating view
                     startClockService();
                 } else {
-                    // show admob view.
+                    // show admob
                     showInterstitial();
                 }
             }
         });
 
-        // init admob.
         initializeAdmob();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
 
-    private void startClockService() {
-        isClockFloating = !isClockFloating;
-
-        // show floating view.
-//        if (Build.VERSION.SDK_INT >= 26) {
-//            startForegroundService(getClockServiceIntent());
-//        } else {
-            startService(getClockServiceIntent());
-//        }
+        EventBus.getDefault().register(this);
     }
 
-    private void stopClockService() {
-        stopService(getClockServiceIntent());
-        isClockFloating = !isClockFloating;
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        onLoadPrefFloatingStatus();
+        updateFloatingIcon();
     }
 
-    private Intent getClockServiceIntent() {
-        return new Intent(getApplicationContext(), TimerFloatingService.class);
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
     }
 
     private void showAlertPermission() {
@@ -115,8 +127,23 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // admob
+    //------------------------------------------------------------------------------ FloatingService
+
+    private void startClockService() {
+        startService(getClockServiceIntent());
+    }
+
+    private void stopClockService() {
+        stopService(getClockServiceIntent());
+    }
+
+    private Intent getClockServiceIntent() {
+        return new Intent(getApplicationContext(), TimerFloatingService.class);
+    }
+
+    //------------------------------------------------------------------------------ FloatingService
+
+    //---------------------------------------------------------------------------------------- admob
 
     private void showInterstitial() {
         if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
@@ -179,4 +206,57 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    //---------------------------------------------------------------------------------------- admob
+
+    //------------------------------------------------------------------------------ floating button
+
+    private void updateFloatingIcon() {
+        if (isClockFloating) {
+            // now floating status. so floating icon is close
+            floatingActionButton.setImageResource(R.drawable.ic_close_white_24dp);
+        } else {
+            // not floating status. so floating icon is add
+            floatingActionButton.setImageResource(R.drawable.ic_add_to_queue_white_24dp);
+        }
+    }
+
+    //------------------------------------------------------------------------------ floating button
+
+    //----------------------------------------------------------------------------------- SharedPref
+
+    private void onSavePrefFloatingStatus(boolean status) {
+        SharedPreferencesHelper pref = new SharedPreferencesHelper(this);
+        if (pref != null) {
+            pref.setFloatingState(status);
+        }
+    }
+
+    private void onLoadPrefFloatingStatus() {
+        SharedPreferencesHelper pref = new SharedPreferencesHelper(this);
+        if (pref != null) {
+            isClockFloating = pref.getFloatingState();
+        } else {
+            isClockFloating = false;
+        }
+    }
+
+    //----------------------------------------------------------------------------------- SharedPref
+
+    // --------------------------------------------------------------------------- EventBus Listener
+
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onFloatingServiceEvent(FloatingServiceEvent event) {
+        Log.d(TAG, "onChangeFloatingStatus: " + event.toString());
+        if (event.getStatus() == FloatingServiceStatus.RUNNING) {
+            isClockFloating = true;
+        } else {
+            isClockFloating = false;
+        }
+
+        updateFloatingIcon();
+    }
+
+    // --------------------------------------------------------------------------- EventBus Listener
 }
