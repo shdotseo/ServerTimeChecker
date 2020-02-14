@@ -1,12 +1,10 @@
 package io.animal.Meerkat;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.PersistableBundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.View;
@@ -79,6 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         initializeAdmob();
     }
+
 
     @Override
     protected void onStart() {
