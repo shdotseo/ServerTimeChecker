@@ -6,11 +6,15 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.AppCompatSeekBar;
 import androidx.fragment.app.Fragment;
+
+import com.google.android.material.textview.MaterialTextView;
 
 import java.io.IOException;
 
@@ -34,6 +38,44 @@ public class MainFragment extends Fragment {
 
         NetworkTask networkTask = new NetworkTask();
         networkTask.execute("http://naver.com");
+
+        final MaterialTextView clock = view.findViewById(R.id.clock);
+
+        AppCompatSeekBar fontSizeSeekBar = view.findViewById(R.id.font_size);
+        fontSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                clock.setTextSize(progress);
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+            }
+        });
+
+        AppCompatSeekBar fontMarginSeekBar = view.findViewById(R.id.margin_size);
+//        fontMarginSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+////                 clock.setPadding(progress, progress, progress, progress);
+//                 clock.setWidth(progress);
+//                 clock.setHeight(progress);
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//
+//            }
+//        });
         return view;
     }
 
