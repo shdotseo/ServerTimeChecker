@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SeekBarPreference
+        app:key="font_size"
+        app:title="글씨크기"
+        app:singleLineTitle="true"/>
+
+    <SeekBarPreference
+        app:key="margin_size"
+        app:title="여백크기"
+        />
+
+    <CheckBoxPreference
+        app:title="24시간"
+        app:defaultValue="false"/>
+
+</PreferenceScreen>

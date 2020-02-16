@@ -6,6 +6,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -19,6 +21,7 @@ import com.google.android.material.textview.MaterialTextView;
 import java.io.IOException;
 
 import io.animal.Meerkat.R;
+import io.animal.Meerkat.ui.setting.SettingsFragment;
 import io.animal.Meerkat.util.RequestHttpConnection;
 
 public class MainFragment extends Fragment {
@@ -26,6 +29,18 @@ public class MainFragment extends Fragment {
     private static final String TAG = "MainFragment";
 
     private TextView tw;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        if (savedInstanceState == null) {
+            getChildFragmentManager()
+                    .beginTransaction()
+                    .replace(R.id.main_container, new SettingsFragment())
+                    .commitNow();
+        }
+    }
 
     @Nullable
     @Override
@@ -39,31 +54,32 @@ public class MainFragment extends Fragment {
         NetworkTask networkTask = new NetworkTask();
         networkTask.execute("http://naver.com");
 
-        final MaterialTextView clock = view.findViewById(R.id.clock);
 
-        AppCompatSeekBar fontSizeSeekBar = view.findViewById(R.id.font_size);
-        fontSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//        final MaterialTextView clock = view.findViewById(R.id.clock);
+//
+//        AppCompatSeekBar fontSizeSeekBar = view.findViewById(R.id.font_size);
+//        fontSizeSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//                Log.d(TAG, "onProgressChanged: " + progress);
 //                clock.setTextSize(progress);
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-            }
-        });
-
-        AppCompatSeekBar fontMarginSeekBar = view.findViewById(R.id.margin_size);
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//            }
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//            }
+//        });
+//
+//        AppCompatSeekBar fontMarginSeekBar = view.findViewById(R.id.margin_size);
 //        fontMarginSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
 //            @Override
 //            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-////                 clock.setPadding(progress, progress, progress, progress);
-//                 clock.setWidth(progress);
-//                 clock.setHeight(progress);
+//                FrameLayout.LayoutParams Params1 = new FrameLayout.LayoutParams(progress, progress);
+//                clock.setLayoutParams(Params1);
 //            }
 //
 //            @Override

@@ -1,5 +1,6 @@
 package io.animal.Meerkat;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -7,7 +8,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -15,8 +19,10 @@ import com.google.android.gms.ads.InterstitialAd;
 import com.google.android.gms.ads.MobileAds;
 import com.google.android.gms.ads.initialization.InitializationStatus;
 import com.google.android.gms.ads.initialization.OnInitializationCompleteListener;
+import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.snackbar.Snackbar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -25,7 +31,9 @@ import org.greenrobot.eventbus.ThreadMode;
 import io.animal.Meerkat.eventbus.FloatingServiceEvent;
 import io.animal.Meerkat.eventbus.FloatingServiceStatus;
 import io.animal.Meerkat.services.TimerFloatingService;
+import io.animal.Meerkat.ui.bottom.ServerSheetsFragment;
 import io.animal.Meerkat.ui.main.MainFragment;
+import io.animal.Meerkat.ui.setting.SettingsFragment;
 import io.animal.Meerkat.util.PermissionHelper;
 import io.animal.Meerkat.util.SharedPreferencesHelper;
 
@@ -74,6 +82,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+        BottomAppBar bottomAppBar = findViewById(R.id.bottomAppBar);
+        bottomAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ServerSheetsFragment bottomSheet = new ServerSheetsFragment();
+                bottomSheet.show(getSupportFragmentManager(), "S");
+            }
+        });
 
         initializeAdmob();
     }
@@ -104,6 +120,13 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.action_settings) {
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showAlertPermission() {
