@@ -36,7 +36,7 @@
         android:id="@+id/test_timer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="System Time"
+        android:text="by SystemTime"
         android:gravity="right"
         android:layout_marginTop="10dp"
         android:layout_marginRight="20dp"
@@ -108,8 +108,9 @@
             android:id="@+id/hour"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_gravity="center"
             android:checked="true"
-            android:layout_gravity="center" />
+            android:text="12/24" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

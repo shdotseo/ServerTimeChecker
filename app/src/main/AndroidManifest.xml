@@ -3,7 +3,7 @@
     package="io.animal.Meerkat">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -13,9 +13,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".services.TimerFloatingService"
+            android:name=".services.TimerService"
             android:enabled="true"
             android:exported="true"></service>
+        <service
+            android:name=".services.TimerFloatingService"
+            android:enabled="true"
+            android:exported="true" />
 
         <activity android:name=".MainActivity">
             <intent-filter>

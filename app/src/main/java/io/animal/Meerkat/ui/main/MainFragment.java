@@ -67,6 +67,7 @@ public class MainFragment extends Fragment {
 
         tw = view.findViewById(R.id.test_timer);
 
+        // default naver.com
         NetworkTask networkTask = new NetworkTask();
         networkTask.execute("http://naver.com");
 
@@ -77,12 +78,14 @@ public class MainFragment extends Fragment {
                 clock.setText(toTime(getSystemTime()));
             }
         });
+
 //        final FrameLayout clockContainer = view.findViewById(R.id.clock_container);
 //        clockWight = clockContainer.getLayoutParams().width;
 //        clockHeight = clockContainer.getLayoutParams().height;
 
         clock = view.findViewById(R.id.clock);
-        clock.setText(toTime(getSystemTime()));
+        // TODO font 적용이 되지 않음.
+//        clock.setText(toTime(getSystemTime()));
 //        clock.setTypeface(getLedFont());
 
         AppCompatSeekBar fontSizeSeekBar = view.findViewById(R.id.font_size);
