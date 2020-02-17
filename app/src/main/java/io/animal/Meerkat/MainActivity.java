@@ -30,6 +30,7 @@ import org.greenrobot.eventbus.ThreadMode;
 
 import io.animal.Meerkat.eventbus.FloatingServiceEvent;
 import io.animal.Meerkat.eventbus.FloatingServiceStatus;
+import io.animal.Meerkat.eventbus.TimerEvent;
 import io.animal.Meerkat.services.TimerFloatingService;
 import io.animal.Meerkat.ui.bottom.ServerSheetsFragment;
 import io.animal.Meerkat.ui.main.MainFragment;

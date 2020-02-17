@@ -1,5 +1,6 @@
 package io.animal.Meerkat.ui.main;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -23,10 +24,16 @@ import androidx.fragment.app.Fragment;
 import com.google.android.material.switchmaterial.SwitchMaterial;
 import com.google.android.material.textview.MaterialTextView;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.IOException;
 import java.util.Calendar;
 
 import io.animal.Meerkat.R;
+import io.animal.Meerkat.eventbus.TimerEvent;
+import io.animal.Meerkat.services.TimerService;
 import io.animal.Meerkat.util.RequestHttpConnection;
 import io.animal.Meerkat.util.TimeFormatHelper;
 
@@ -45,15 +52,11 @@ public class MainFragment extends Fragment {
 
     private TimeFormatHelper timeFormatHelper;
 
+    private long currentTime;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-//            getChildFragmentManager()
-//                    .beginTransaction()
-//                    .replace(R.id.main_container, new SettingsFragment())
-//                    .commitNow();
-        }
 
         timeFormatHelper = new TimeFormatHelper();
     }
@@ -125,7 +128,20 @@ public class MainFragment extends Fragment {
 //            }
 //        });
 
+        // register EventBus
+        EventBus.getDefault().register(this);
+
+        getContext().startService(new Intent(getContext(), TimerService.class));
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        getContext().stopService(new Intent(getContext(), TimerService.class));
+
+        EventBus.getDefault().unregister(this);
     }
 
     private long getSystemTime() {
@@ -138,6 +154,13 @@ public class MainFragment extends Fragment {
         } else {
             return timeFormatHelper.toDate12(time);
         }
+    }
+
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdatingTimer(TimerEvent event) {
+        currentTime += 1000;
+        clock.setText(timeFormatHelper.toDate(currentTime));
     }
 
     private Typeface getLedFont() throws Resources.NotFoundException {
@@ -164,8 +187,11 @@ public class MainFragment extends Fragment {
         protected void onPostExecute(Long aLong) {
             super.onPostExecute(aLong);
 
+            currentTime = aLong;
+
             tw.setText("naver");
-            clock.setText(timeFormatHelper.toDate(aLong));
+
+            clock.setText(timeFormatHelper.toDate(currentTime));
         }
     }
 
