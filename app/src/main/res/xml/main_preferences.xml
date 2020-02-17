@@ -4,16 +4,16 @@
 
     <SeekBarPreference
         app:key="font_size"
-        app:title="글씨크기"
-        app:singleLineTitle="true"/>
+        app:icon="@drawable/ic_text_fields_gray_24dp"
+        app:min="30" />
 
     <SeekBarPreference
         app:key="margin_size"
-        app:title="여백크기"
-        />
+        app:icon="@drawable/ic_picture_in_picture_gray_24dp" />
 
     <CheckBoxPreference
-        app:title="24시간"
-        app:defaultValue="false"/>
+        app:key="24_hour"
+        app:defaultValue="false"
+        app:icon="@drawable/ic_schedule_gray_24dp"/>
 
 </PreferenceScreen>

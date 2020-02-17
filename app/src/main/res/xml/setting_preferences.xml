@@ -2,8 +2,13 @@
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
     <Preference
-        app:key="information"
-        app:title="정보"
+        app:key="license"
+        app:title="License"
+        app:icon="@drawable/ic_launcher_foreground" />
+
+    <Preference
+        app:key="version"
+        app:title="version"
         app:icon="@drawable/ic_launcher_foreground" />
     <!--    <Preference-->
     <!--        app:key="information"-->
