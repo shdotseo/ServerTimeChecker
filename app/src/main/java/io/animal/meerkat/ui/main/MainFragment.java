@@ -72,8 +72,8 @@ public class MainFragment extends Fragment {
         tw = view.findViewById(R.id.test_timer);
 
         // default naver.com
-        NetworkTask networkTask = new NetworkTask();
-        networkTask.execute("http://naver.com");
+//        NetworkTask networkTask = new NetworkTask();
+//        networkTask.execute("http://naver.com");
 
         is24Hour = view.findViewById(R.id.hour);
         is24Hour.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -132,16 +132,12 @@ public class MainFragment extends Fragment {
 
         // register EventBus
         EventBus.getDefault().register(this);
-
-        getContext().startService(new Intent(getContext(), TimerService.class));
         return view;
     }
 
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-
-        getContext().stopService(new Intent(getContext(), TimerService.class));
 
         EventBus.getDefault().unregister(this);
     }
@@ -158,52 +154,58 @@ public class MainFragment extends Fragment {
         }
     }
 
+    // -------------------------------------------------------------------------- Event Bus Listener
+
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdatingTimer(TimerEvent event) {
-        currentTime += TimerService.EVENT_PERIOD;
+        currentTime = event.getTime();
+
         clock.setText(timeFormatHelper.toDate(currentTime));
     }
+
+    // -------------------------------------------------------------------------- Event Bus Listener
 
     private Typeface getLedFont() throws Resources.NotFoundException {
         return ResourcesCompat.getFont(getContext(), R.font.font);
     }
 
-    class NetworkTask extends AsyncTask<String, Void, Long> {
-
-        private String server;
-
-        @Override
-        protected Long doInBackground(String... voids) {
-            long serverTime = 0;
-
-            if (voids == null || voids.length == 0) {
-                return serverTime;
-            }
-
-            server = voids[0];
-
-            RequestHttpConnection requestHttpConnection = new RequestHttpConnection(server);
-
-            try {
-                serverTime = requestHttpConnection.getServerDate();
-            } catch (IOException e) {
-                Log.e(TAG, e.getMessage());
-            }
-
-            return serverTime;
-        }
-
-        @Override
-        protected void onPostExecute(Long date) {
-            super.onPostExecute(date);
-
-            currentTime = date;
-
-            tw.setText(server);
-
-            clock.setText(timeFormatHelper.toDate(currentTime));
-        }
-    }
+//    class NetworkTask extends AsyncTask<String, Void, Long> {
+//
+//        private String server;
+//
+//        @Override
+//        protected Long doInBackground(String... voids) {
+//            long serverTime = 0;
+//
+//            if (voids == null || voids.length == 0) {
+//                return serverTime;
+//            }
+//
+//            // set server url
+//            server = voids[0];
+//
+//            RequestHttpConnection requestHttpConnection = new RequestHttpConnection(server);
+//
+//            try {
+//                serverTime = requestHttpConnection.getServerDate();
+//            } catch (IOException e) {
+//                Log.e(TAG, e.getMessage());
+//            }
+//
+//            return serverTime;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Long date) {
+//            super.onPostExecute(date);
+//
+//            currentTime = date;
+//
+//            tw.setText(server);
+//
+//            clock.setText(timeFormatHelper.toDate(currentTime));
+//        }
+//    }
 
 }

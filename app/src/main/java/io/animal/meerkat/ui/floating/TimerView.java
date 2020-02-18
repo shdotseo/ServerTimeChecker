@@ -12,9 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 
+import androidx.annotation.NonNull;
+
 import com.google.android.material.textview.MaterialTextView;
 
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import io.animal.meerkat.R;
+import io.animal.meerkat.eventbus.TimerEvent;
 
 public class TimerView extends ContextWrapper {
 
@@ -24,14 +30,16 @@ public class TimerView extends ContextWrapper {
 
     private WindowManager.LayoutParams params;
 
+    private MaterialTextView clock;
+
     public TimerView(Context c) {
         super(c);
 
         LayoutInflater inflate = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
         arenaView = inflate.inflate(R.layout.timer_view_land, null);
 
-        MaterialTextView tw = arenaView.findViewById(R.id.clock);
-        tw.setOnTouchListener(new View.OnTouchListener() {
+        clock = arenaView.findViewById(R.id.clock);
+        clock.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 Log.d(TAG, "onTouch");
@@ -47,6 +55,10 @@ public class TimerView extends ContextWrapper {
 
     public void removeView() {
         getWindowManager().removeView(arenaView);
+    }
+
+    public void updateClock(@NonNull String time) {
+        clock.setText(time);
     }
 
     private WindowManager _windowManager;
@@ -84,4 +96,17 @@ public class TimerView extends ContextWrapper {
         params.y = 0;
         return params;
     }
+
+
+    // ------------------------------------------------------------------------------------ EventBus
+
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdatingTimer(TimerEvent event) {
+//        currentTime += TimerService.EVENT_PERIOD;
+//        timerView.updateClock(timeFormatHelper.toDate(currentTime));
+        clock.setText("");
+    }
+
+    // ------------------------------------------------------------------------------------ EventBus
 }

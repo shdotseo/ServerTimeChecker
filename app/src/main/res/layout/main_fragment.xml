@@ -15,7 +15,7 @@
         app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/border">
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/clock"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

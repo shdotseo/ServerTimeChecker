@@ -15,7 +15,7 @@
         <service
             android:name="io.animal.meerkat.services.TimerService"
             android:enabled="true"
-            android:exported="true"></service>
+            android:exported="true" />
         <service
             android:name="io.animal.meerkat.services.TimerFloatingService"
             android:enabled="true"

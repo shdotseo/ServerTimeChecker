@@ -2,6 +2,9 @@ package io.animal.meerkat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -28,6 +31,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import io.animal.meerkat.eventbus.FloatingServiceEvent;
 import io.animal.meerkat.eventbus.FloatingServiceStatus;
 import io.animal.meerkat.services.TimerFloatingService;
+import io.animal.meerkat.services.TimerService;
 import io.animal.meerkat.ui.bottom.ServerSheetsFragment;
 import io.animal.meerkat.ui.main.MainFragment;
 import io.animal.meerkat.util.PermissionHelper;
@@ -71,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
 
                 if (!isClockFloating) {
                     // show floating view
-                    startClockService();
+                    startClockViewService();
                 } else {
                     // show admob
                     showInterstitial();
@@ -90,10 +94,13 @@ public class MainActivity extends AppCompatActivity {
         initializeAdmob();
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
+
+        if (!isFloatingLaunchingService(this)) {
+            startClockService();
+        }
 
         EventBus.getDefault().register(this);
     }
@@ -111,6 +118,10 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
 
         EventBus.getDefault().unregister(this);
+
+        if (isFloatingLaunchingService(this)) {
+            stopClockService();
+        }
     }
 
     @Override
@@ -145,23 +156,41 @@ public class MainActivity extends AppCompatActivity {
                 .show();
     }
 
-    //------------------------------------------------------------------------------ FloatingService
-
-    private void startClockService() {
-        startService(getClockServiceIntent());
-    }
-
     private void stopClockService() {
+        stopService(getClockViewServiceIntent());
+
         stopService(getClockServiceIntent());
     }
 
+    ///-------------------------------------------------------------------------------- TimerService
+
+    private void startClockService() {
+        if (!isTimerServiceLaunching(this)) {
+            startService(getClockServiceIntent());
+        }
+    }
+
     private Intent getClockServiceIntent() {
+        Intent i = new Intent(getApplicationContext(), TimerService.class);
+        i.putExtra(TimerService.TIME_SERVER_URL, "http://naver.com");
+        return i;
+    }
+
+    ///---------------------------------------------------------------------------- TimerService end
+
+    ///----------------------------------------------------------------------------- FloatingService
+
+    private void startClockViewService() {
+        startService(getClockViewServiceIntent());
+    }
+
+    private Intent getClockViewServiceIntent() {
         return new Intent(getApplicationContext(), TimerFloatingService.class);
     }
 
-    //------------------------------------------------------------------------------ FloatingService
+    ///------------------------------------------------------------------------- FloatingService end
 
-    //---------------------------------------------------------------------------------------- admob
+    ///--------------------------------------------------------------------------------------- admob
 
     private void showInterstitial() {
         if (mInterstitialAd != null && mInterstitialAd.isLoaded()) {
@@ -225,7 +254,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    //---------------------------------------------------------------------------------------- admob
+    ///----------------------------------------------------------------------------------- admob end
 
     //------------------------------------------------------------------------------ floating button
 
@@ -239,9 +268,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //------------------------------------------------------------------------------ floating button
+    ///------------------------------------------------------------------------- floating button end
 
-    //----------------------------------------------------------------------------------- SharedPref
+    ///----------------------------------------------------------------------------------- SharedPref
 
     private void onSavePrefFloatingStatus(boolean status) {
         SharedPreferencesHelper pref = new SharedPreferencesHelper(this);
@@ -259,9 +288,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    //----------------------------------------------------------------------------------- SharedPref
+    ///------------------------------------------------------------------------------ SharedPref end
 
-    // --------------------------------------------------------------------------- EventBus Listener
+    ///--------------------------------------------------------------------------- EventBus Listener
 
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -276,5 +305,31 @@ public class MainActivity extends AppCompatActivity {
         updateFloatingIcon();
     }
 
-    // --------------------------------------------------------------------------- EventBus Listener
+    ///----------------------------------------------------------------------- EventBus Listener end
+
+    ///------------------------------------------------------------------------------ private method
+
+    private boolean isFloatingLaunchingService(Context mContext) {
+        ActivityManager manager = (ActivityManager) mContext.getSystemService(Context.ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (TimerFloatingService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+
+        return  false;
+    }
+
+    private boolean isTimerServiceLaunching(Context c) {
+        ActivityManager manager = (ActivityManager) c.getSystemService(Context.ACTIVITY_SERVICE);
+
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (TimerService.class.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+
+        return  false;
+    }
 }
