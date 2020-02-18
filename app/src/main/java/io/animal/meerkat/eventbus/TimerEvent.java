@@ -1,4 +1,4 @@
-package io.animal.Meerkat.eventbus;
+package io.animal.meerkat.eventbus;
 
 public class TimerEvent {
 

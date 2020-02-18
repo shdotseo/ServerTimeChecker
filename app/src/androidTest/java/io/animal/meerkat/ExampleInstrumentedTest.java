@@ -1,4 +1,4 @@
-package io.animal.Meerkat;
+package io.animal.meerkat;
 
 import android.content.Context;
 
@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("io.animal.Meerkat", appContext.getPackageName());
+        assertEquals("io.animal.meerkat", appContext.getPackageName());
     }
 }

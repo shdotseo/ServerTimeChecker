@@ -1,4 +1,4 @@
-package io.animal.Meerkat.util;
+package io.animal.meerkat.util;
 
 import android.app.Activity;
 import android.content.Context;

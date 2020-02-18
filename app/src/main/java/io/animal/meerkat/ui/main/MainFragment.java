@@ -1,10 +1,10 @@
-package io.animal.Meerkat.ui.main;
+package io.animal.meerkat.ui.main;
 
+import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.SystemClock;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,14 +21,19 @@ import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.material.switchmaterial.SwitchMaterial;
-import com.google.android.material.textview.MaterialTextView;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 import java.io.IOException;
 import java.util.Calendar;
 
-import io.animal.Meerkat.R;
-import io.animal.Meerkat.util.RequestHttpConnection;
-import io.animal.Meerkat.util.TimeFormatHelper;
+import io.animal.meerkat.R;
+import io.animal.meerkat.eventbus.TimerEvent;
+import io.animal.meerkat.services.TimerService;
+import io.animal.meerkat.util.RequestHttpConnection;
+import io.animal.meerkat.util.TimeFormatHelper;
 
 public class MainFragment extends Fragment {
 
@@ -45,17 +50,16 @@ public class MainFragment extends Fragment {
 
     private TimeFormatHelper timeFormatHelper;
 
+    private long currentTime;
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (savedInstanceState == null) {
-//            getChildFragmentManager()
-//                    .beginTransaction()
-//                    .replace(R.id.main_container, new SettingsFragment())
-//                    .commitNow();
-        }
 
         timeFormatHelper = new TimeFormatHelper();
+
+        // update current time.
+        currentTime = getSystemTime();
     }
 
     @Nullable
@@ -75,7 +79,7 @@ public class MainFragment extends Fragment {
         is24Hour.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                clock.setText(toTime(getSystemTime()));
+                clock.setText(toTime(currentTime));
             }
         });
 
@@ -84,6 +88,7 @@ public class MainFragment extends Fragment {
 //        clockHeight = clockContainer.getLayoutParams().height;
 
         clock = view.findViewById(R.id.clock);
+
         // TODO font 적용이 되지 않음.
 //        clock.setText(toTime(getSystemTime()));
 //        clock.setTypeface(getLedFont());
@@ -125,7 +130,20 @@ public class MainFragment extends Fragment {
 //            }
 //        });
 
+        // register EventBus
+        EventBus.getDefault().register(this);
+
+        getContext().startService(new Intent(getContext(), TimerService.class));
         return view;
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+
+        getContext().stopService(new Intent(getContext(), TimerService.class));
+
+        EventBus.getDefault().unregister(this);
     }
 
     private long getSystemTime() {
@@ -140,17 +158,33 @@ public class MainFragment extends Fragment {
         }
     }
 
+    @SuppressWarnings("unused")
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onUpdatingTimer(TimerEvent event) {
+        currentTime += TimerService.EVENT_PERIOD;
+        clock.setText(timeFormatHelper.toDate(currentTime));
+    }
+
     private Typeface getLedFont() throws Resources.NotFoundException {
         return ResourcesCompat.getFont(getContext(), R.font.font);
     }
 
     class NetworkTask extends AsyncTask<String, Void, Long> {
 
+        private String server;
+
         @Override
         protected Long doInBackground(String... voids) {
-            RequestHttpConnection requestHttpConnection = new RequestHttpConnection("http://naver.com");
-
             long serverTime = 0;
+
+            if (voids == null || voids.length == 0) {
+                return serverTime;
+            }
+
+            server = voids[0];
+
+            RequestHttpConnection requestHttpConnection = new RequestHttpConnection(server);
+
             try {
                 serverTime = requestHttpConnection.getServerDate();
             } catch (IOException e) {
@@ -161,11 +195,14 @@ public class MainFragment extends Fragment {
         }
 
         @Override
-        protected void onPostExecute(Long aLong) {
-            super.onPostExecute(aLong);
+        protected void onPostExecute(Long date) {
+            super.onPostExecute(date);
 
-            tw.setText("naver");
-            clock.setText(timeFormatHelper.toDate(aLong));
+            currentTime = date;
+
+            tw.setText(server);
+
+            clock.setText(timeFormatHelper.toDate(currentTime));
         }
     }
 

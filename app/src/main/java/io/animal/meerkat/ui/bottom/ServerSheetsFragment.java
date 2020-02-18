@@ -1,4 +1,4 @@
-package io.animal.Meerkat.ui.bottom;
+package io.animal.meerkat.ui.bottom;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -10,7 +10,7 @@ import androidx.annotation.Nullable;
 
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
-import io.animal.Meerkat.R;
+import io.animal.meerkat.R;
 
 public class ServerSheetsFragment extends BottomSheetDialogFragment {
 

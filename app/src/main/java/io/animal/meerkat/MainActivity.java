@@ -1,4 +1,4 @@
-package io.animal.Meerkat;
+package io.animal.meerkat;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -8,10 +8,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.ads.AdListener;
 import com.google.android.gms.ads.AdRequest;
@@ -22,20 +20,18 @@ import com.google.android.gms.ads.initialization.OnInitializationCompleteListene
 import com.google.android.material.bottomappbar.BottomAppBar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import io.animal.Meerkat.eventbus.FloatingServiceEvent;
-import io.animal.Meerkat.eventbus.FloatingServiceStatus;
-import io.animal.Meerkat.services.TimerFloatingService;
-import io.animal.Meerkat.ui.bottom.ServerSheetsFragment;
-import io.animal.Meerkat.ui.main.MainFragment;
-import io.animal.Meerkat.ui.setting.SettingsFragment;
-import io.animal.Meerkat.util.PermissionHelper;
-import io.animal.Meerkat.util.SharedPreferencesHelper;
+import io.animal.meerkat.eventbus.FloatingServiceEvent;
+import io.animal.meerkat.eventbus.FloatingServiceStatus;
+import io.animal.meerkat.services.TimerFloatingService;
+import io.animal.meerkat.ui.bottom.ServerSheetsFragment;
+import io.animal.meerkat.ui.main.MainFragment;
+import io.animal.meerkat.util.PermissionHelper;
+import io.animal.meerkat.util.SharedPreferencesHelper;
 
 public class MainActivity extends AppCompatActivity {
 

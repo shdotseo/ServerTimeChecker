@@ -1,4 +1,4 @@
-package io.animal.Meerkat.services;
+package io.animal.meerkat.services;
 
 import android.app.Service;
 import android.content.Intent;
@@ -7,10 +7,10 @@ import android.util.Log;
 
 import org.greenrobot.eventbus.EventBus;
 
-import io.animal.Meerkat.eventbus.FloatingServiceEvent;
-import io.animal.Meerkat.eventbus.FloatingServiceStatus;
-import io.animal.Meerkat.ui.floating.TimerView;
-import io.animal.Meerkat.util.SharedPreferencesHelper;
+import io.animal.meerkat.eventbus.FloatingServiceEvent;
+import io.animal.meerkat.eventbus.FloatingServiceStatus;
+import io.animal.meerkat.ui.floating.TimerView;
+import io.animal.meerkat.util.SharedPreferencesHelper;
 
 public class TimerFloatingService extends Service {
 

@@ -1,4 +1,4 @@
-package io.animal.Meerkat;
+package io.animal.meerkat;
 
 import org.junit.Test;
 

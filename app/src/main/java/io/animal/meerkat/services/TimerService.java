@@ -1,24 +1,36 @@
-package io.animal.Meerkat.services;
+package io.animal.meerkat.services;
 
+import android.app.Notification;
 import android.app.Service;
 import android.content.Intent;
+import android.os.Build;
 import android.os.IBinder;
+
+import androidx.core.app.NotificationCompat;
 
 import org.greenrobot.eventbus.EventBus;
 
+import java.util.Calendar;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import io.animal.Meerkat.eventbus.TimerEvent;
+import io.animal.meerkat.eventbus.TimerEvent;
+import io.animal.meerkat.notification.NotificationHelper;
 
 public class TimerService extends Service {
+
+    public final static int EVENT_PERIOD = 500;
 
     private Timer timer;
 
     private TimerTask timerTask;
 
+    private NotificationHelper notificationHelper;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        notificationHelper = new NotificationHelper(this);
+
         timerTask = new TimerTask() {
             @Override
             public void run() {
@@ -27,7 +39,9 @@ public class TimerService extends Service {
         };
 
         timer = new Timer();
-        timer.schedule(timerTask, 1000);
+        timer.schedule(timerTask, Calendar.getInstance().getTime(),EVENT_PERIOD);
+
+        startForegroundService();
 
         return super.onStartCommand(intent, flags, startId);
     }
@@ -40,6 +54,19 @@ public class TimerService extends Service {
             timer.cancel();
         }
     }
+
+    private void startForegroundService() {
+        final int CHANNEL_ID = 1001;
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            NotificationCompat.Builder builder = notificationHelper.getForegroundNotification();
+
+            startForeground(CHANNEL_ID, builder.build());
+        } else {
+            startForeground(CHANNEL_ID, new Notification());
+        }
+    }
+
 
     @Override
     public IBinder onBind(Intent intent) {

@@ -1,4 +1,4 @@
-package io.animal.Meerkat.util;
+package io.animal.meerkat.util;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

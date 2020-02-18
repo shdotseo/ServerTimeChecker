@@ -1,4 +1,4 @@
-package io.animal.Meerkat.util;
+package io.animal.meerkat.util;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -6,7 +6,7 @@ import android.content.ContextWrapper;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.animal.Meerkat.R;
+import io.animal.meerkat.R;
 
 public class ServerListHelper extends ContextWrapper {
 

@@ -1,4 +1,4 @@
-package io.animal.Meerkat.ui.floating;
+package io.animal.meerkat.ui.floating;
 
 import android.content.Context;
 import android.content.ContextWrapper;
@@ -14,7 +14,7 @@ import android.view.WindowManager;
 
 import com.google.android.material.textview.MaterialTextView;
 
-import io.animal.Meerkat.R;
+import io.animal.meerkat.R;
 
 public class TimerView extends ContextWrapper {
 

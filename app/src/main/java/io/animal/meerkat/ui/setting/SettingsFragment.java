@@ -1,4 +1,4 @@
-package io.animal.Meerkat.ui.setting;
+package io.animal.meerkat.ui.setting;
 
 import android.os.Bundle;
 import android.util.Log;
@@ -7,7 +7,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.SeekBarPreference;
 
-import io.animal.Meerkat.R;
+import io.animal.meerkat.R;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
 

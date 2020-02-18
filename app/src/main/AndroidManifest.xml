@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="io.animal.Meerkat">
+    package="io.animal.meerkat">
 
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -13,15 +13,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <service
-            android:name=".services.TimerService"
+            android:name="io.animal.meerkat.services.TimerService"
             android:enabled="true"
             android:exported="true"></service>
         <service
-            android:name=".services.TimerFloatingService"
+            android:name="io.animal.meerkat.services.TimerFloatingService"
             android:enabled="true"
             android:exported="true" />
 
-        <activity android:name=".MainActivity">
+        <activity android:name="io.animal.meerkat.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

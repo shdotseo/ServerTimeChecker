@@ -1,4 +1,4 @@
-package io.animal.Meerkat.util;
+package io.animal.meerkat.util;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
