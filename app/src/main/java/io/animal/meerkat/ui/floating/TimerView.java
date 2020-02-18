@@ -16,11 +16,14 @@ import androidx.annotation.NonNull;
 
 import com.google.android.material.textview.MaterialTextView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import io.animal.meerkat.R;
 import io.animal.meerkat.eventbus.TimerEvent;
+import io.animal.meerkat.util.SharedPreferencesHelper;
+import io.animal.meerkat.util.TimeFormatHelper;
 
 public class TimerView extends ContextWrapper {
 
@@ -34,6 +37,8 @@ public class TimerView extends ContextWrapper {
 
     private MaterialTextView clock;
 
+    private TimeFormatHelper timeFormatHelper;
+
     public TimerView(Context c) {
         super(c);
 
@@ -46,19 +51,31 @@ public class TimerView extends ContextWrapper {
         clock.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
+//                switch (event.getAction()) {
+//                    case MotionEvent.ACTION_DOWN:
+//                        break;
+//                        case MotionEvent.
+//                }
                 Log.d(TAG, "onTouch");
                 clockView.changeAlpha();
                 return false;
             }
         });
+
+
         params = createTouchViewParams();
+
     }
 
     public void updateParamsForLocation() {
         getWindowManager().addView(view, params);
+
+        EventBus.getDefault().register(this);
     }
 
     public void removeView() {
+        EventBus.getDefault().unregister(this);
+
         getWindowManager().removeView(view);
     }
 
@@ -103,15 +120,44 @@ public class TimerView extends ContextWrapper {
     }
 
 
-    // ------------------------------------------------------------------------------------ EventBus
+    /// ----------------------------------------------------------------------------------- EventBus
 
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onUpdatingTimer(TimerEvent event) {
-//        currentTime += TimerService.EVENT_PERIOD;
-//        timerView.updateClock(timeFormatHelper.toDate(currentTime));
-        clock.setText("");
+        String time = "";
+        if (onLoadPref24Hour()) {
+            time = getTimeFormatHelper().toDate(event.getTime());
+        } else {
+            time = getTimeFormatHelper().toDate12(event.getTime());
+        }
+        clock.setText(time);
     }
 
-    // ------------------------------------------------------------------------------------ EventBus
+    /// ----------------------------------------------------------------------------------- EventBus
+
+    /// -------------------------------------------------------------------------
+
+    private TimeFormatHelper getTimeFormatHelper() {
+        if (timeFormatHelper == null) {
+            timeFormatHelper = new TimeFormatHelper();
+        }
+
+        return timeFormatHelper;
+    }
+
+    /// -------------------------------------------------------------------------
+
+    /// --------------------------------------------------------------------------- sharedpreference
+
+    private boolean onLoadPref24Hour() {
+        SharedPreferencesHelper pref = new SharedPreferencesHelper(getApplicationContext());
+        if (pref != null) {
+            return pref.checked24Hour();
+        }
+
+        return false;
+    }
+
+    /// ----------------------------------------------------------------------- sharedpreference end
 }

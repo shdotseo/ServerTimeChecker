@@ -33,6 +33,7 @@ import io.animal.meerkat.R;
 import io.animal.meerkat.eventbus.TimerEvent;
 import io.animal.meerkat.services.TimerService;
 import io.animal.meerkat.util.RequestHttpConnection;
+import io.animal.meerkat.util.SharedPreferencesHelper;
 import io.animal.meerkat.util.TimeFormatHelper;
 
 public class MainFragment extends Fragment {
@@ -76,12 +77,17 @@ public class MainFragment extends Fragment {
 //        networkTask.execute("http://naver.com");
 
         is24Hour = view.findViewById(R.id.hour);
+        onSavePref24Hour(is24Hour.isChecked());
+
         is24Hour.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                onSavePref24Hour(isChecked);
+
                 clock.setText(toTime(currentTime));
             }
         });
+
 
 //        final FrameLayout clockContainer = view.findViewById(R.id.clock_container);
 //        clockWight = clockContainer.getLayoutParams().width;
@@ -169,6 +175,19 @@ public class MainFragment extends Fragment {
     private Typeface getLedFont() throws Resources.NotFoundException {
         return ResourcesCompat.getFont(getContext(), R.font.font);
     }
+
+
+    /// --------------------------------------------------------------------------- sharedpreference
+
+    private void onSavePref24Hour(boolean b24Hour) {
+        SharedPreferencesHelper pref = new SharedPreferencesHelper(getContext());
+        if (pref != null) {
+            pref.setEnable24Hour(b24Hour);
+        }
+    }
+
+    /// ----------------------------------------------------------------------- sharedpreference end
+
 
 //    class NetworkTask extends AsyncTask<String, Void, Long> {
 //

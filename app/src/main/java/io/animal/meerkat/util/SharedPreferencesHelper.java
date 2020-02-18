@@ -10,6 +10,8 @@ public class SharedPreferencesHelper extends ContextWrapper {
     public final static String KEY_FLOATING_SERVICE_STATE = "floating_service_state";
     public final static String KEY_FLOATING_CLOCK_ENABLE = "floating_clock_enable";
 
+    private final static String KEY_24_HOUR = "24_hour";
+
     private final static String PREF_NAME = "pref";
 
     private SharedPreferences pref;
@@ -37,6 +39,14 @@ public class SharedPreferencesHelper extends ContextWrapper {
 
     public boolean isFloatingClock() {
         return getPreferences().getBoolean(KEY_FLOATING_CLOCK_ENABLE, false);
+    }
+
+    public void setEnable24Hour(boolean is24) {
+        getPreferences().edit().putBoolean(KEY_24_HOUR, is24).apply();
+    }
+
+    public boolean checked24Hour() {
+        return getPreferences().getBoolean(KEY_24_HOUR, false);
     }
 
     public void registerChangeListener(SharedPreferences.OnSharedPreferenceChangeListener listener) {
