@@ -45,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
 
     private FloatingActionButton floatingActionButton;
 
-    private boolean isClockFloating;
+//    private boolean isClockFloating;
 
     // admob
     private InterstitialAd mInterstitialAd;
@@ -73,9 +73,14 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
 
-                if (!isClockFloating) {
+                if (!onLoadPrefFloatingClock()) {
                     // show floating view
                     startClockViewService();
+
+                    onSavePrefFloatingClock(true);
+
+                    // Floating Clock이 시작하면 App은 종료.
+                    finish();
                 } else {
                     // show admob
                     showInterstitial();
@@ -102,6 +107,9 @@ public class MainActivity extends AppCompatActivity {
             startClockService();
         }
 
+        // App이 구동되면 Floating Clock 종료.
+        stopClockViewService();
+
         EventBus.getDefault().register(this);
     }
 
@@ -109,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        onLoadPrefFloatingStatus();
+//        onLoadPrefFloatingStatus();
         updateFloatingIcon();
     }
 
@@ -119,8 +127,13 @@ public class MainActivity extends AppCompatActivity {
 
         EventBus.getDefault().unregister(this);
 
-        if (isFloatingLaunchingService(this)) {
-            stopClockService();
+        // Floating enable 상태면 App 종료 시점에 Floating 구동.
+        if (onLoadPrefFloatingClock()) {
+            startClockViewService();
+        } else {
+            if (isFloatingLaunchingService(this)) {
+                stopClockService();
+            }
         }
     }
 
@@ -154,6 +167,10 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
                 .show();
+    }
+
+    private void stopClockViewService() {
+        stopService(getClockViewServiceIntent());
     }
 
     private void stopClockService() {
@@ -250,6 +267,10 @@ public class MainActivity extends AppCompatActivity {
 
                 // stopClock
                 stopClockService();
+
+                onSavePrefFloatingClock(false);
+                updateFloatingIcon();
+//                onSavePrefFloatingStatus(false);
             }
         });
     }
@@ -259,7 +280,7 @@ public class MainActivity extends AppCompatActivity {
     //------------------------------------------------------------------------------ floating button
 
     private void updateFloatingIcon() {
-        if (isClockFloating) {
+        if (onLoadPrefFloatingClock()) {
             // now floating status. so floating icon is close
             floatingActionButton.setImageResource(R.drawable.ic_close_white_24dp);
         } else {
@@ -272,20 +293,36 @@ public class MainActivity extends AppCompatActivity {
 
     ///----------------------------------------------------------------------------------- SharedPref
 
-    private void onSavePrefFloatingStatus(boolean status) {
+//    private void onSavePrefFloatingStatus(boolean status) {
+//        SharedPreferencesHelper pref = new SharedPreferencesHelper(this);
+//        if (pref != null) {
+//            pref.setFloatingState(status);
+//        }
+//    }
+
+//    private void onLoadPrefFloatingStatus() {
+//        SharedPreferencesHelper pref = new SharedPreferencesHelper(this);
+//        if (pref != null) {
+//            isClockFloating = pref.getFloatingState();
+//        } else {
+//            isClockFloating = false;
+//        }
+//    }
+
+    private void onSavePrefFloatingClock(boolean status) {
         SharedPreferencesHelper pref = new SharedPreferencesHelper(this);
         if (pref != null) {
-            pref.setFloatingState(status);
+            pref.setFloatingEnable(status);
         }
     }
 
-    private void onLoadPrefFloatingStatus() {
+    private boolean onLoadPrefFloatingClock() {
         SharedPreferencesHelper pref = new SharedPreferencesHelper(this);
         if (pref != null) {
-            isClockFloating = pref.getFloatingState();
-        } else {
-            isClockFloating = false;
+            return pref.isFloatingClock();
         }
+
+        return false;
     }
 
     ///------------------------------------------------------------------------------ SharedPref end
@@ -297,12 +334,12 @@ public class MainActivity extends AppCompatActivity {
     public void onFloatingServiceEvent(FloatingServiceEvent event) {
         Log.d(TAG, "onChangeFloatingStatus: " + event.toString());
         if (event.getStatus() == FloatingServiceStatus.RUNNING) {
-            isClockFloating = true;
+//            isClockFloating = true;
         } else {
-            isClockFloating = false;
+//            isClockFloating = false;
         }
 
-        updateFloatingIcon();
+//        updateFloatingIcon();
     }
 
     ///----------------------------------------------------------------------- EventBus Listener end

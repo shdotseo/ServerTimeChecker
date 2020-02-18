@@ -5,17 +5,10 @@ import android.content.Intent;
 import android.os.IBinder;
 import android.util.Log;
 
-import com.google.android.material.textview.MaterialTextView;
-
 import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
-import java.util.Optional;
 
 import io.animal.meerkat.eventbus.FloatingServiceEvent;
 import io.animal.meerkat.eventbus.FloatingServiceStatus;
-import io.animal.meerkat.eventbus.TimerEvent;
 import io.animal.meerkat.ui.floating.TimerView;
 import io.animal.meerkat.util.SharedPreferencesHelper;
 
@@ -33,7 +26,7 @@ public class TimerFloatingService extends Service {
         timerView = new TimerView(getApplicationContext());
         timerView.updateParamsForLocation();
 
-        onUpdateFloatingStautsonPref(true);
+        onUpdateFloatingStatusonPref(true);
 
         // post event bus
         EventBus.getDefault().post(new FloatingServiceEvent(FloatingServiceStatus.RUNNING));
@@ -54,7 +47,7 @@ public class TimerFloatingService extends Service {
             timerView.removeView();
         }
 
-        onUpdateFloatingStautsonPref(false);
+        onUpdateFloatingStatusonPref(false);
 
         // post event bus
         EventBus.getDefault().post(new FloatingServiceEvent(FloatingServiceStatus.STOP));
@@ -66,7 +59,7 @@ public class TimerFloatingService extends Service {
         throw new UnsupportedOperationException("Not yet implemented");
     }
 
-    private void onUpdateFloatingStautsonPref(boolean status) {
+    private void onUpdateFloatingStatusonPref(boolean status) {
         SharedPreferencesHelper pref = new SharedPreferencesHelper(getApplicationContext());
         if (pref != null) {
             pref.setFloatingState(status);

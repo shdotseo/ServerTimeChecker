@@ -26,7 +26,9 @@ public class TimerView extends ContextWrapper {
 
     private final static String TAG = "TimerView";
 
-    private View arenaView;
+    private ClockView clockView;
+
+    private View view;
 
     private WindowManager.LayoutParams params;
 
@@ -36,13 +38,16 @@ public class TimerView extends ContextWrapper {
         super(c);
 
         LayoutInflater inflate = (LayoutInflater) getSystemService(LAYOUT_INFLATER_SERVICE);
-        arenaView = inflate.inflate(R.layout.timer_view_land, null);
+        view = inflate.inflate(R.layout.timer_view_land, null);
 
-        clock = arenaView.findViewById(R.id.clock);
+        clockView = new ClockView(view);
+
+        clock = view.findViewById(R.id.clock);
         clock.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 Log.d(TAG, "onTouch");
+                clockView.changeAlpha();
                 return false;
             }
         });
@@ -50,11 +55,11 @@ public class TimerView extends ContextWrapper {
     }
 
     public void updateParamsForLocation() {
-        getWindowManager().addView(arenaView, params);
+        getWindowManager().addView(view, params);
     }
 
     public void removeView() {
-        getWindowManager().removeView(arenaView);
+        getWindowManager().removeView(view);
     }
 
     public void updateClock(@NonNull String time) {

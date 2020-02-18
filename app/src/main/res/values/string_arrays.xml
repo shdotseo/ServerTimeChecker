@@ -6,4 +6,10 @@
         <item>멜론 티켓|ticket.melon.com</item>
         <item>yes24 티켓|ticket.yes24.com</item>
     </string-array>
+    <string-array name="server_correction">
+        <item>네이버|100</item>
+        <item>인터파크 티켓|200</item>
+        <item>멜론 티켓|300</item>
+        <item>yes24 티켓|400</item>
+    </string-array>
 </resources>
